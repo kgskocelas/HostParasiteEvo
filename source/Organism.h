@@ -11,8 +11,7 @@
  *  - Parasites collect resources from hosts.
  */
 
-#ifndef ORGANISM_H
-#define ORGANISM_H
+#pragma once 
 
 #include "tools/Random.h"
 
@@ -20,17 +19,21 @@
 class Organism {
 
   public:
-    /// constructor
-    Organism(bool _is_parasite, const size_t _organism_type, emp::Random & _random) 
-    : random(_random),  organism_type(_organism_type), is_parasite(_is_parasite)  
+    /*************************************************************************************************************************************
+    * Organism constructor. Creates a new organism with a randome genome.
+    * 
+    * @param \c _organism_type The type of organism it is.
+    * @param \c _id            Organism id.
+    * @param \c _is_parasite   Is the organism a paraste.
+    * @param \c _random        Empirical random number generator.
+    *************************************************************************************************************************************/
+    Organism(const size_t _organism_type, const size_t _id, const bool _is_parasite, emp::Random & _random) 
+    : random(_random),  organism_type(_organism_type), id(_id), is_parasite(_is_parasite)
     {
-      
+
       switch(organism_type) {
         case (1) :
-          /// setup random genome
-          break;
-        case (2) :
-          /// setup random genome
+          create_genome(0.5);
           break;
         default : 
           /// throw an exception
@@ -46,6 +49,7 @@ class Organism {
     };
 
     /// getters & setters
+    size_t GetOrganismType() { return organism_type; }
     size_t GetId() { return id; }
     std::bitset<100> GetGenome() {return genome; }
     bool IsParasite() { return is_parasite; }
@@ -59,15 +63,39 @@ class Organism {
       return (repro_time < _in.repro_time);
     }
 
+    //TODO - Update method
+    //TODO - Reproduce method
+
   private:
     emp::Random & random;
 
-    size_t id;
+    const size_t organism_type;    
+    const size_t id;   
+    const bool is_parasite = false;  
     std::bitset<100> genome;
-    const size_t organism_type;
-    const bool is_parasite = false;
     double repro_time = 0.0;          ///< When will this organism replicate?
+
+    /*************************************************************************************************************************************
+    * Generates a random 100 bit genome and assigns to this organism.
+    * 
+    * Uses a Bernoulli distribution: 
+    * https://stackoverflow.com/questions/25176423/c-efficient-way-to-generate-random-bitset-with-configurable-mean-1s-to-0s
+    * 
+    * @param \c seed Random number seed.
+    * @param \c p    Probability that a bit will be 1.
+    ************************************************************************************************************************************/
+    void create_genome(double p) {
+
+      // genome = emp::RandomBitVector(random, 100);
+
+      std::random_device rd;
+      std::mt19937 generator(rd());
+      std::bernoulli_distribution distribution(p);
+
+      for( int n = 0; n < genome.size(); ++n) {
+        genome[n] = distribution(generator);
+      }
+
+    }
   
 };
-
-#endif ///ORGANSIM_H

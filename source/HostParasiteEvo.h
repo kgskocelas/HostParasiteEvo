@@ -104,9 +104,9 @@ class Experiment {
             World world;
         
             //2. initialize populations & add to world
-            world.addPopulation("fleas");
-            world.addPopulation("cats");
-            world.addPopulation("dogs");
+            world.AddPopulation("fleas");
+            world.AddPopulation("cats");
+            world.AddPopulation("dogs");
 
             //4. run experiement
             std::cout << "Hello, host parasite evolution world!";    

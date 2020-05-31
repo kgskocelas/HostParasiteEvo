@@ -11,8 +11,7 @@
  *  - Parasites collect resources from hosts.
  */
 
-#ifndef POPULATION_H
-#define POPULATION_H
+#pragma once 
 
 #include "Organism.h"
 
@@ -22,37 +21,46 @@
 
 // class World;
 class Population {
-  // references
-  emp::Random & random;
-  const std::string name;
-
-  //organism variables
-  emp::vector<Organism> organisms;       ///< All organisms in this population
-  bool are_parasites;                    ///< Are the organisms in the population parasites?
-  size_t num_organisms = 0;              ///< How many organisms are currently in the population?
-
-  //replication variables
-  emp::TimeQueue<size_t> organism_queue; ///< Organisms waiting to replicate.
-  double mutation_probability = 0.0;     ///< Probability of an offspring being mutated.
 
   public:
-    // constructor
-    Population(const std::string & _name, emp::Random & _random, size_t _initial_pop_size = 0, bool _are_parasites = false) 
-    : random(_random), name(_name), organism_queue(_initial_pop_size) 
-    { 
 
+    /*************************************************************************************************************************************
+    * Population constructor. Reads in arguments from the command line and uses to set up the experiment.
+    * 
+    * @param \c _is_parasite   Is the organism a paraste.
+    * @param \c _organism_type The type of organism it is.
+    * @param \c _random        Empirical random number generator.
+    *************************************************************************************************************************************/
+    Population(const std::string & _name, emp::Random & _random, bool _are_parasites = false, size_t _initial_pop_size = 0) 
+    : random(_random), name(_name), are_parasites(_are_parasites), organism_queue(_initial_pop_size)
+    { 
       size_t initial_pop_size = _initial_pop_size;
-      are_parasites = _are_parasites;
 
       // create starting organisms & add to population
-      for (int org_count = 0; org_count <= initial_pop_size; org_count++) {
-        // 1. create organism 
-        // 2. add to population
+      for (int org_count = 0; org_count < initial_pop_size; org_count++) {
+        organisms.emplace_back(org_count, 2, true, random);
         ++num_organisms;
       }
 
-  }
+    }
+
+    // getters & setters
+    const std::string GetName() { return name; }
+    bool AreParasites() { return are_parasites; }
+    size_t Size() { return num_organisms; }
+
+  private:
+    // references
+    emp::Random & random;
+    const std::string name;
+
+    //organism variables
+    emp::vector<Organism> organisms;       ///< All organisms in this population
+    bool are_parasites;                    ///< Are the organisms in the population parasites?
+    size_t num_organisms = 0;              ///< How many organisms are currently in the population?
+
+    //replication variables
+    emp::TimeQueue<size_t> organism_queue; ///< Organisms waiting to replicate.
+    double mutation_probability = 0.0;     ///< Probability of an offspring being mutated.
 
 };
-
-#endif ///POPULATION_H

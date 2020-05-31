@@ -1,4 +1,4 @@
-TEST_NAMES := example
+TEST_NAMES := OrganismTest PopulationTest
 
 EMP_DIR := ../../Empirical/source
 

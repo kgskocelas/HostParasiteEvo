@@ -8,8 +8,7 @@
  *
  */
 
-#ifndef WORLD_H
-#define WORLD_H
+#pragma once 
 
 #include "Population.h"
 
@@ -20,20 +19,37 @@
 
 class World
 {
-    private: 
+    public:
+        /*************************************************************************************************************************************
+        * World constructor.
+        * 
+        * TODO -- add params for world dimensions 
+        * TODO -- add params for world resources
+        *************************************************************************************************************************************/
+        World() {}
 
+        /*************************************************************************************************************************************
+        * Creates a new population and adds it to the world.
+        * 
+        * @param \c population_name     Name of the population.
+        * @param \c init_size           Initial population size. Creates this number of random organisms & adds them to the population.
+        * @param \c is_parasite         Is this a population of parasites.
+        *************************************************************************************************************************************/
+        void AddPopulation(const std::string &population_name, bool is_parasite = false, size_t init_size = 0)
+        {
+            populations.emplace_back(population_name, random, is_parasite, init_size);
+        }
+
+        //getters & setters
+        int GetNumPopulations() { return populations.size(); }
+
+    private: 
         emp::Random random;   
         //world variables
 
         //world contents
         emp::vector<Population> populations;
 
-    public:
-        World() {}
-        void addPopulation(const std::string &population_name, size_t init_size = 0, bool is_parasite = false)
-        {
-            populations.emplace_back(population_name, random, init_size, is_parasite);
-        }
 };
 
 /// spatial map of world
@@ -65,5 +81,3 @@ struct RunResults
         return *this;
     }
 };
-
-#endif /// WORLD_H
